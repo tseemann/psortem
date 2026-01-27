@@ -29,7 +29,7 @@ conda install -c bioconda -c conda-forge psortem # COMING ONE DAY
 ## Quick start
 
 ```
-% psortem --version
+% psortem -v
 psortem 0.4.2
 
 % psortem bigfiles*.txt > sorted
@@ -41,6 +41,7 @@ psortem 0.4.2
 ```
 
 ## Options
+Use `psortem -h` for full help:
 ```
   -h       Show this help and exit
   -v       Show version and exit
@@ -61,12 +62,12 @@ psortem 0.4.2
 * Sounds like "Plz sort 'em!" ("Please sort them")
 * It uses Unix `sort` but uses parallel (`p`) CPUs to do an extenal (`e`) merge (`m`) sort.
 * Looks like the word [post-mortem](https://en.wiktionary.org/wiki/post_mortem)
-* Fairly unique as a software names.
+* Fairly unique amongst software names
 
 ## References
 
 * [Unix sort command](https://en.wikipedia.org/wiki/Sort_(Unix))
-* Linux `sort(1)` man page](https://manned.org/sort.1)
+* [Linux `sort(1)` man page](https://manned.org/sort.1)
 * [External merge   sort](https://en.wikipedia.org/wiki/External_sorting#External_merge_sort)
 
 ## Feedback
