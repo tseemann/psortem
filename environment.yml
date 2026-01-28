@@ -3,6 +3,7 @@ channels:
   - bioconda
 dependencies:
   - perl >=5.32
+  - coreutils >=9.5
   - vmtouch
   - make
   - bats-core
