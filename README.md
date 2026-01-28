@@ -6,9 +6,11 @@
 
 # psortem
 
-Parallel external merge sort
+Parallel external merge sort for billions of rows.
 
-## Description
+## Introduction
+
+<IMG SRC="psortem.png" ALIGN="right" WIDTH="64" ALT="psortem logo">
 
 The classic Unix `sort` tool is great if you
 want to sort a bunch of unsorted files 
