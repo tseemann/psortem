@@ -10,7 +10,7 @@ Parallel external merge sort for billions of rows.
 
 ## Introduction
 
-<IMG SRC="psortem.png" ALIGN="right" WIDTH="96" ALT="psortem logo">
+<IMG SRC="psortem.png" ALIGN="right" WIDTH="256" ALT="psortem logo">
 
 The classic Unix `sort` tool is great if you
 want to sort a bunch of unsorted files 
