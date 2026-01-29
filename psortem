@@ -9,8 +9,16 @@ use File::Basename;
 use File::Spec;
 
 my $EXE = basename($0);
-my $VER = '0.4.2';
+my $VER = '0.5.0';
 my $URL = "https://github.com/tseemann/psortem";
+
+my %ZCAT = (
+  'gz'     => 'libdeflate-gzip -dcf',
+  'zst[d]' => 'zstd -dcf',
+  'xz'     => 'xz -dcf',
+  'bz2'    => 'bzip2 -dcf',
+  'lz4'    => 'lz4 -dcf',
+);
 
 my %opt = (
   'j'=>0, 'k'=>16, 'o'=>'', 'f'=>'', 'S'=>'',
@@ -57,6 +65,7 @@ my $id=0;
 open my $MF, '>', "$TD/Makefile";
 select $MF;
 
+say "SHELL := bash";
 say ".PHONY: all";
 say "RM := rm -f";
 say "SORT := LC_ALL=C sort $opt{S} -T $TD --batch-size=$opt{k}";
@@ -78,7 +87,8 @@ if ($opt{'s'}) {
     my $out = "$TD/presort_$id";
     $is_temp{$out}++;
     say "$out : $in";
-    say "\t\$(SORT) \$^ > \$@";
+    $in = zcat($in);
+    say "\t\$(SORT) $in > \$@";
     push @sorted, $out;
   }
   @file = @sorted;
@@ -93,7 +103,8 @@ while (@file > 1) {
   my @rm = grep { $is_temp{$_} } @in;
   say "$out : @in";
   say "\tvmtouch -t \$^" if $opt{'t'};
-  say "\t\$(SORT) --merge \$^ > \$@";
+  @in = zcat(@in);
+  say "\t\$(SORT) --merge @in > \$@";
   say "\t\$(RM) @rm" if @rm;
   push @file, $out;
 }
@@ -119,6 +130,21 @@ msg("$TD should be cleaned up now.");
 msg("Sorting compelte.", $opt{'n'} ? " (Dry-run)" : "");
 exit(0);
 
+#.............................................
+sub zcat {
+  my @out;
+  for my $in (@_) {
+    EXT:
+    for my $ext (keys %ZCAT) {
+      if ($in =~ m/\.$ext$/) {
+        $in = '<('.$ZCAT{$ext}." $in)";
+        last EXT;
+      }
+    }
+    push @out, $in;
+  }
+  return @out;
+}
 #.............................................
 sub have_exe {
   my($exe, $optional) = @_;

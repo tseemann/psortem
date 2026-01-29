@@ -41,6 +41,8 @@ psortem 0.4.2
 
 % psrterm -f filenames.fofn > sorted
 
+% psortm A B.gz C.bz2 D.xz E.zst F.lz4 > sorted
+
 % psortem -o sorted -s unsoirted*.txt
 
 ```
