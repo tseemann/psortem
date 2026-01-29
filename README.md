@@ -19,13 +19,8 @@ if you want to do a merge sort, the `--merge`
 option is single-threaded and is very slow
 when merging large numbers of files. 
 `psortem` will accpet all your files 
-(sorted or unsorted) and use as many CPUs
+(sorted or unsorted, compressed or plain) and use as many CPUs
 and RAM you have to efficiently sort your data.
-
-It also supports compressed input files
-(.gz .zst .xz .bz2 .lz4). Under the hood, it uses `make` to coordinate
-the parallel executation of the depenency graph
-and deletes used files as it goes.
 
 ## Installation
 
@@ -36,9 +31,6 @@ conda install -c bioconda -c conda-forge psortem
 ## Quick start
 
 ```
-% psortem -v
-psortem 0.4.2
-
 % psortem bigfiles*.txt > sorted
 
 % psrterm -f filenames.fofn > sorted
@@ -48,6 +40,26 @@ psortem 0.4.2
 % psortem -o sorted -s unsoirted*.txt
 
 ```
+
+## Input files
+
+* Accepts plain or compressed files 
+  (.gz .zst .xz .bz2 .lz4)
+* Assumes input files are *sorted* 
+  and will merge them. If you have unsorted
+  file use `-s` to pre-sort them.
+* Control sort keys with `-S`. FOr common
+  case of numeric sort, use the convenience
+  options `-n`.
+* If you have 1000s of files, you can provide
+  a file of file names (a FOFN) via `-f`
+
+## Output
+
+* Default output is to `stdout`
+* Save to a direct file using `-o`.
+* If `-o` filename has a compression suffix
+  (.gz .zst .xz .bz2 .lz4) it will be compressed
 
 ## Options
 Use `psortem -h` for full help:
@@ -60,11 +72,17 @@ Use `psortem -h` for full help:
   -k INT   Files to merge per CPU [16]
   -f FOFN  FIle of filenames to sort
   -T DIR   Fast temporary directory [/tmp/tseemann]
-  -n       Dry-run - just print steps
   -s       Sort input files first
   -S STR   Unix 'sort' options eg. -k1,1n -t$'\t'
+  -n       Sort numerically; same as -S '-n'
   -t       Pre-cache input files with 'vmtouch'
 ```
+
+## Performance tips
+
+* By default all CPUs will be used. Control via `-j`
+* If you have lots of RAM, use `-T /dev/shm`
+* If you have slow disk, try reducing `-k`
 
 ## Etymology
 

@@ -9,15 +9,15 @@ use File::Basename;
 use File::Spec;
 
 my $EXE = basename($0);
-my $VER = '0.5.0';
+my $VER = '0.5.1';
 my $URL = "https://github.com/tseemann/psortem";
 
 my %ZCAT = (
-  'gz'     => 'libdeflate-gzip -dcf',
-  'zst[d]' => 'zstd -dcf',
-  'xz'     => 'xz -dcf',
-  'bz2'    => 'bzip2 -dcf',
-  'lz4'    => 'lz4 -dcf',
+  'gz'  => 'libdeflate-gzip',
+  'zst' => 'zstd',
+  'xz'  => 'xz',
+  'bz2' => 'bzip2',
+  'lz4' => 'lz4',
 );
 
 my %opt = (
@@ -35,6 +35,7 @@ $opt{h} and show_help(0);
 $opt{C} and show_citation();
 is_int($opt{k}, '-k INT', 2, 1024);
 -f $opt{o} and err("Output -o $opt{o} already exists");
+$opt{n} and $opt{S} .= " --numeric-sort";
 
 my $cpus = cpus();
 is_int($opt{j}, '-j CPUS', 0, $cpus);
@@ -87,7 +88,7 @@ if ($opt{'s'}) {
     my $out = "$TD/presort_$id";
     $is_temp{$out}++;
     say "$out : $in";
-    $in = zcat($in);
+    ($in) = zcat($in);
     say "\t\$(SORT) $in > \$@";
     push @sorted, $out;
   }
@@ -121,7 +122,6 @@ else {
 close $MF;
 
 my $mopt = $opt{'q'} ? '--silent' : '';
-$mopt .= " -n" if $opt{n};
 system('bash', '-c', "make $mopt -j $opt{j} -C $TD all 3>&1 1>&2")==0
   or err("Error sorting files: $!");
 # BUG: make uses STDERR with -n mode?
@@ -131,13 +131,23 @@ msg("Sorting compelte.", $opt{'n'} ? " (Dry-run)" : "");
 exit(0);
 
 #.............................................
+sub conpress {
+  my($fn) = @_;
+  my $exts = join '|', keys %ZCAT;
+  if ($fn =~ m/\.($exts)$/) {
+    return " | $ZCAT{$1} -cf > $fn";
+  }
+  return " > $fn";
+}
+
+#.............................................
 sub zcat {
   my @out;
   for my $in (@_) {
     EXT:
     for my $ext (keys %ZCAT) {
       if ($in =~ m/\.$ext$/) {
-        $in = '<('.$ZCAT{$ext}." $in)";
+        $in = '<('.$ZCAT{$ext}." -dcf $in)";
         last EXT;
       }
     }
@@ -221,9 +231,9 @@ OPTIONS
   -k INT   Files to merge per CPU [$opt{k}]
   -f FOFN  FIle of filenames to sort
   -T DIR   Fast temporary directory [$opt{T}]
-  -n       Dry-run - just print steps
   -s       Sort input files first
   -S STR   Unix 'sort' options eg. -k1,1n -t\$'\\t' 
+  -n       Sort numerically; same as -S '-n''
   -t       Pre-cache input files with 'vmtouch'
 END  
 END_HELP
