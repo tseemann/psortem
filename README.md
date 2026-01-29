@@ -21,6 +21,9 @@ when merging large numbers of files.
 `psortem` will accpet all your files 
 (sorted or unsorted) and use as many CPUs
 and RAM you have to efficiently sort your data.
+It also supports compressed input files
+(.gz .zst .xz .bz2 .lz4).
+
 Under the hood, it uses `make` to coordinate
 the parallel executation of the depenency graph
 and deletes used files as it goes.

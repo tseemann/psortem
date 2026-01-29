@@ -4,6 +4,11 @@ channels:
 dependencies:
   - perl >=5.32
   - coreutils >=9.5
+  - libdeflate-gzip
+  - zstd
+  - xz
+  - bzip2
+  - lz4
   - vmtouch
   - make
   - bats-core

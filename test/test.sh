@@ -34,14 +34,14 @@ setup () {
   [[ "$output" =~ "ERROR:" ]]
 }
 @test "Plain files" {
-  run $exe -q N01.txt N01.txt
-  [[ "${lines[-1]}" =~ "100" ]]
+  run $exe -q -S '-n' N01.txt N01.txt
+  [[ "${lines[-2]}" =~ "100" ]]
 }
 @test "Compressed files" {
-  run $exe -q N0*
+  run $exe -q -S '-n' N0*
   [[ "${lines[-1]}" =~ "6418" ]]
 }
 @test "Many CPUs" {
-  run $exe -j $(nproc) -q N0*
+  run $exe -j $(nproc) -S '-n' -q N0*
   [[ "${lines[-1]}" =~ "6418" ]]
 }
