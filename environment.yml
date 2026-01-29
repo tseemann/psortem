@@ -4,7 +4,7 @@ channels:
 dependencies:
   - perl >=5.32
   - coreutils >=9.5
-  - libdeflate-gzip
+  - libdeflate
   - zstd
   - xz
   - bzip2
